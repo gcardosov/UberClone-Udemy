@@ -43,7 +43,8 @@
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:text="SOY CONDUCTOR"
-                android:background="@color/colorCreamBlue"
+                android:background="@drawable/rounded_button"
+                android:backgroundTint="@color/colorCreamBlue"
                 android:layout_marginRight="5dp"
                 />
 
@@ -52,7 +53,8 @@
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:text="SOY CLIENTE"
-                android:background="@color/colorCreamBlue"
+                android:background="@drawable/rounded_button"
+                android:backgroundTint="@color/colorCreamBlue"
                 android:layout_marginLeft="5dp"
                 />
 
