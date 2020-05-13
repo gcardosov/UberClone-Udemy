@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".RegisterActivity"
+    tools:context=".LoginActivity"
     >
 
     <LinearLayout
@@ -14,18 +14,31 @@
         android:orientation="vertical"
         >
 
+        <ImageView
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:src="@drawable/icon_uber_clone"
+            android:layout_marginTop="100dp"
+            android:layout_marginBottom="20dp"
+            android:layout_gravity="center"
+            />
+
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_margin="10dp">
+            android:layout_margin="10dp"
+            >
             <ImageView
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:layout_marginTop="10dp"
-                android:src="@drawable/icon_user"
                 android:layout_marginLeft="5dp"
+                android:src="@drawable/icon_email"
                 />
+
+
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -34,8 +47,8 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Nombre completo"
-                    android:inputType="text"
+                    android:hint="Correo electronico"
+                    android:inputType="textEmailAddress"
                     >
                 </com.google.android.material.textfield.TextInputEditText>
             </com.google.android.material.textfield.TextInputLayout>
@@ -53,40 +66,11 @@
                 android:layout_height="35dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="5dp"
-                android:src="@drawable/icon_email"
-                />
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            >
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Correo electronico"
-                android:inputType="textEmailAddress"
-                >
-            </com.google.android.material.textfield.TextInputEditText>
-        </com.google.android.material.textfield.TextInputLayout>
-
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_margin="10dp">
-            <ImageView
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="5dp"
                 android:src="@drawable/icon_password"
                 />
             <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 >
                 <com.google.android.material.textfield.TextInputEditText
@@ -112,6 +96,7 @@
                 android:backgroundTint="@color/colorPrimary"
                 android:textColor="@color/colorWhite"
                 android:layout_margin="30dp"
+
                 />
 
         </LinearLayout>
