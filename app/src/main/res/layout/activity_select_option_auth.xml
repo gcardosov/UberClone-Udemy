@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    android:background="@color/colorWhite"
+    android:background="@color/colorPrimary"
     tools:context=".SelectOptionAuthActivity">
 
     <LinearLayout
@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:text="Selecciona una opción"
             android:textAlignment="center"
-            android:textColor="@color/colorAccent"
+            android:textColor="@color/colorWhite"
             android:layout_margin="40dp"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -40,8 +40,7 @@
             android:layout_marginRight="30dp"
             android:background="@drawable/rounded_button"
             android:text="YA TENGO CUENTA"
-            android:textColor="@color/colorWhite"
-            android:backgroundTint="@color/colorPrimary"
+            android:backgroundTint="@color/colorCreamBlue"
 
             />
 
@@ -52,8 +51,7 @@
             android:layout_marginRight="30dp"
             android:background="@drawable/rounded_button"
             android:text="REGISTRARME AHORA"
-            android:textColor="@color/colorWhite"
-            android:backgroundTint="@color/colorPrimary"
+            android:backgroundTint="@color/colorCreamBlue"
             android:layout_marginTop="10dp"
             />
 
