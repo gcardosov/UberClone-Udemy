@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
         mButtonIAmClient = findViewById(R.id.btnIAmClient);
         mButtonIAmDriver = findViewById(R.id.btnIAmDriver);
 
-
+        //Capturar el evento cuanto clickeamos el boton
         mButtonIAmClient.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
+ //Ir de una actividad a otra
     private void goToSelectAuth() {
         Intent intent = new Intent(MainActivity.this, SelectOptionAuthActivity.class);
         startActivity(intent);
