@@ -36,10 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
-
     }
-
 
  //Ir de una actividad a otra
     private void goToSelectAuth() {
