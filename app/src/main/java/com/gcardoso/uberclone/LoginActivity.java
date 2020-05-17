@@ -3,6 +3,7 @@ package com.gcardoso.uberclone;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -17,6 +18,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import dmax.dialog.SpotsDialog;
+
 public class LoginActivity extends AppCompatActivity {
 
     TextInputEditText mTextInputEmail;
@@ -25,6 +28,8 @@ public class LoginActivity extends AppCompatActivity {
 
     FirebaseAuth mAuth;
     DatabaseReference mDatabase;
+
+    AlertDialog mDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +41,8 @@ public class LoginActivity extends AppCompatActivity {
         mButtonLogin = findViewById(R.id.btnLogin);
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
+
+        mDialog = new SpotsDialog.Builder().setContext(LoginActivity.this).setMessage("Espere un momento").build();
 
         mButtonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,6 +59,7 @@ public class LoginActivity extends AppCompatActivity {
 
         if (!email.isEmpty() && !password.isEmpty()){
             if (password.length() >= 6){
+                mDialog.show();
                 mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -60,6 +68,7 @@ public class LoginActivity extends AppCompatActivity {
                         }else{
                             Toast.makeText(LoginActivity.this, "El email o la contraseña son invalidos", Toast.LENGTH_SHORT).show();
                         }
+                        mDialog.dismiss();
                     }
                 });
             }
