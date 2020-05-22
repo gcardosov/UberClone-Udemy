@@ -48,7 +48,7 @@
             />
 
         <Button
-            android:id="@+id/GoToRegister"
+            android:id="@+id/btnGoToRegister"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
