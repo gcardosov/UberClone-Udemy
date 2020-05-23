@@ -8,10 +8,13 @@
     tools:context=".RegisterActivity"
     >
 
+    <include layout ="@layout/action_bar_toollbar"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
         >
 
         <LinearLayout
@@ -32,6 +35,7 @@
                 android:layout_marginLeft="5dp"
                 >
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/textInputName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Nombre completo"
@@ -61,6 +65,7 @@
             android:layout_marginLeft="5dp"
             >
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/textInputEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Correo electronico"
@@ -87,9 +92,10 @@
             <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
+                    android:layout_marginLeft="5dp"
                 >
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/textInputPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Contraseña"
@@ -105,6 +111,7 @@
             android:gravity="bottom"
             >
             <Button
+                android:id="@+id/btnGoToRegister"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Registrar"
