@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.gcardoso.uberclone.includes.MyToolbar;
 import com.gcardoso.uberclone.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -33,7 +34,6 @@ public class RegisterActivity extends AppCompatActivity {
     TextInputEditText mTextInputName;
     TextInputEditText mTextInputEmail;
     TextInputEditText mTextInputPassword;
-    Toolbar mToolbar;
     AlertDialog mDialog;
 
     @Override
@@ -42,10 +42,7 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
         mDialog = new SpotsDialog.Builder().setContext(RegisterActivity.this).setMessage("Espere un momento").build();
-        mToolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle("Registrar usuario");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        MyToolbar.show(this, "Registro de usuario", true);
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mPref = getApplicationContext().getSharedPreferences("typeUser", MODE_PRIVATE);
