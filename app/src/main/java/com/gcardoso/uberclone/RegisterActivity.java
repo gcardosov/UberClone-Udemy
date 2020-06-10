@@ -12,7 +12,10 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.gcardoso.uberclone.includes.MyToolbar;
+import com.gcardoso.uberclone.models.Client;
 import com.gcardoso.uberclone.models.User;
+import com.gcardoso.uberclone.providers.AuthProvider;
+import com.gcardoso.uberclone.providers.ClientProvider;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
@@ -26,8 +29,9 @@ import dmax.dialog.SpotsDialog;
 public class RegisterActivity extends AppCompatActivity {
 
     SharedPreferences mPref;
-    FirebaseAuth mAuth;
-    DatabaseReference mDatabase;
+
+    AuthProvider mAuthProvider;
+    ClientProvider mClientProvider;
 
     //VIEWS
     Button mButtonRegister;
@@ -43,8 +47,10 @@ public class RegisterActivity extends AppCompatActivity {
 
         mDialog = new SpotsDialog.Builder().setContext(RegisterActivity.this).setMessage("Espere un momento").build();
         MyToolbar.show(this, "Registro de usuario", true);
-        mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance().getReference();
+
+        mAuthProvider = new AuthProvider();
+        mClientProvider = new ClientProvider();
+
         mPref = getApplicationContext().getSharedPreferences("typeUser", MODE_PRIVATE);
         mButtonRegister = findViewById(R.id.btnGoToRegister);
         mTextInputName = findViewById(R.id.textInputName);
@@ -53,33 +59,20 @@ public class RegisterActivity extends AppCompatActivity {
         mButtonRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                registerUser();
+                clickRegister();
             }
         });
     }
 
-    void registerUser() {
-
+    void clickRegister() {
         final String name = mTextInputName.getText().toString();
         final String email = mTextInputEmail.getText().toString();
         final String password = mTextInputPassword.getText().toString();
 
         if(!name.isEmpty() && !email.isEmpty() && !password.isEmpty()){
-            if(password.length() >= 6){
+            if(password.length() >= 6) {
                 mDialog.show();
-                mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        mDialog.hide();
-                        if (task.isSuccessful()){
-                            String id = mAuth.getCurrentUser().getUid();
-                            saveUser(id, name, email);
-                        }
-                        else{
-                            Toast.makeText(RegisterActivity.this, "No se pudo registrar el usuario", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+                register(name, email, password);
             }
             else {
                 Toast.makeText(this, "La contraseña debe tener 6 caracteres", Toast.LENGTH_SHORT).show();
@@ -90,6 +83,39 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
+    void register(final String name , final String email, String password) {
+        mAuthProvider.register(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                mDialog.hide();
+                if (task.isSuccessful()){
+                    String id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                    Client client = new Client(id, name, email);
+                    create(client);
+                }
+                else{
+                    Toast.makeText(RegisterActivity.this, "No se pudo registrar el usuario", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+    //Metodo para guardar el usuario
+    void create(Client client){
+        mClientProvider.create(client).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Toast.makeText(RegisterActivity.this, "El registro se realizo exitosamente", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    Toast.makeText(RegisterActivity.this, "No se pudo registrar el usuario", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+
+/*
     void saveUser(String id, String name, String email) {
         String selectedUser = mPref.getString("user","");
         User user = new User();
@@ -121,4 +147,7 @@ public class RegisterActivity extends AppCompatActivity {
                 }
 
     }
+
+ */
 }
+
