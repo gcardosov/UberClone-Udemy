@@ -1,8 +1,7 @@
-package com.gcardoso.uberclone;
+package com.gcardoso.uberclone.activities.client;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
 import android.app.AlertDialog;
 import android.content.SharedPreferences;
@@ -11,9 +10,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.gcardoso.uberclone.R;
 import com.gcardoso.uberclone.includes.MyToolbar;
 import com.gcardoso.uberclone.models.Client;
-import com.gcardoso.uberclone.models.User;
 import com.gcardoso.uberclone.providers.AuthProvider;
 import com.gcardoso.uberclone.providers.ClientProvider;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -21,8 +20,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import dmax.dialog.SpotsDialog;
 
@@ -44,14 +41,14 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-
-        mDialog = new SpotsDialog.Builder().setContext(RegisterActivity.this).setMessage("Espere un momento").build();
         MyToolbar.show(this, "Registro de usuario", true);
 
         mAuthProvider = new AuthProvider();
         mClientProvider = new ClientProvider();
 
-        mPref = getApplicationContext().getSharedPreferences("typeUser", MODE_PRIVATE);
+        mDialog = new SpotsDialog.Builder().setContext(RegisterActivity.this).setMessage("Espere un momento").build();
+
+
         mButtonRegister = findViewById(R.id.btnGoToRegister);
         mTextInputName = findViewById(R.id.textInputName);
         mTextInputEmail = findViewById(R.id.textInputEmail);

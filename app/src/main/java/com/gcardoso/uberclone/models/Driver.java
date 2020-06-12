@@ -4,15 +4,15 @@ public class Driver {
     String id;
     String name;
     String email;
-    String vehiculeBrand;
-    String vehiculePlate;
+    String vehicleBrand;
+    String vehiclePlate;
 
-    public Driver(String id, String name, String email, String vehiculeBrand, String vehiculePlate) {
+    public Driver(String id, String name, String email, String vehicleBrand, String vehiclePlate) {
         this.id = id;
         this.name = name;
         this.email = email;
-        this.vehiculeBrand = vehiculeBrand;
-        this.vehiculePlate = vehiculePlate;
+        this.vehicleBrand = vehicleBrand;
+        this.vehiclePlate = vehiclePlate;
     }
 
     public String getId() {
@@ -39,20 +39,20 @@ public class Driver {
         this.email = email;
     }
 
-    public String getVehiculeBrand() {
-        return vehiculeBrand;
+    public String getVehicleBrand() {
+        return vehicleBrand;
     }
 
-    public void setVehiculeBrand(String vehiculeBrand) {
-        this.vehiculeBrand = vehiculeBrand;
+    public void setVehicleBrand(String vehicleBrand) {
+        this.vehicleBrand = vehicleBrand;
     }
 
-    public String getVehiculePlate() {
-        return vehiculePlate;
+    public String getVehiclePlate() {
+        return vehiclePlate;
     }
 
-    public void setVehiculePlate(String vehiculePlate) {
-        this.vehiculePlate = vehiculePlate;
+    public void setVehiclePlate(String vehiclePlate) {
+        this.vehiclePlate = vehiclePlate;
     }
 }
 

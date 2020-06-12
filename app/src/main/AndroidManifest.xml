@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.gcardoso.uberclone">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -11,14 +11,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".LoginActivity"
-            android:parentActivityName=".SelectOptionAuthActivity"
-            ></activity>
-        <activity android:name=".RegisterActivity"
-            android:parentActivityName=".SelectOptionAuthActivity" />
-        <activity android:name=".SelectOptionAuthActivity"
-            android:parentActivityName=".MainActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".activities.driver.RegisterDriverActivity"></activity>
+        <activity
+            android:name=".activities.LoginActivity"
+            android:parentActivityName=".activities.SelectOptionAuthActivity" />
+        <activity
+            android:name=".activities.client.RegisterActivity"
+            android:parentActivityName=".activities.SelectOptionAuthActivity" />
+        <activity
+            android:name=".activities.SelectOptionAuthActivity"
+            android:parentActivityName=".activities.MainActivity" />
+        <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

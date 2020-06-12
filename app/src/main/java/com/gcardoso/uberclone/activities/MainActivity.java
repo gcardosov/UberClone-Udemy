@@ -1,4 +1,4 @@
-package com.gcardoso.uberclone;
+package com.gcardoso.uberclone.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -7,6 +7,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+
+import com.gcardoso.uberclone.R;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -40,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         mButtonIAmDriver.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                editor.putString("user","driver");
+                editor.putString("user", "driver");
                 editor.apply();
                 goToSelectAuth();
 
