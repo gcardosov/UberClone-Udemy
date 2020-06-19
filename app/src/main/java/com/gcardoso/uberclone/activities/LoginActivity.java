@@ -4,12 +4,17 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import com.gcardoso.uberclone.R;
+import com.gcardoso.uberclone.activities.client.MapClientActivity;
+import com.gcardoso.uberclone.activities.client.RegisterActivity;
+import com.gcardoso.uberclone.activities.driver.MapDriverActivity;
 import com.gcardoso.uberclone.includes.MyToolbar;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -32,6 +37,8 @@ public class LoginActivity extends AppCompatActivity {
 
     AlertDialog mDialog;
 
+    SharedPreferences mPref;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +52,8 @@ public class LoginActivity extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
         mDialog = new SpotsDialog.Builder().setContext(LoginActivity.this).setMessage("Espere un momento").build();
+
+        mPref = getApplicationContext().getSharedPreferences("typeUser", MODE_PRIVATE);
 
         mButtonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,7 +75,21 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()){
-                            Toast.makeText(LoginActivity.this, "Autenticacion realizada exitosamente", Toast.LENGTH_SHORT).show();
+                            String user = mPref.getString("user", "");
+                            if (user.equals("client")){
+                                Intent intent = new Intent(LoginActivity.this, MapClientActivity.class);
+                                //Con las propiedades de flags no vamos a poder regresar al activity anterior
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
+
+                            }else{
+                                Intent intent = new Intent(LoginActivity.this, MapDriverActivity.class);
+                                //Con las propiedades de flags no vamos a poder regresar al activity anterior
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
+
+                            }
+                            //Toast.makeText(LoginActivity.this, "Autenticacion realizada exitosamente", Toast.LENGTH_SHORT).show();
                         }else{
                             Toast.makeText(LoginActivity.this, "El email o la contraseña son invalidos", Toast.LENGTH_SHORT).show();
                         }

@@ -11,7 +11,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.driver.RegisterDriverActivity"></activity>
+        <activity android:name=".activities.driver.MapDriverActivity"></activity>
+        <activity android:name=".activities.client.MapClientActivity" />
+        <activity android:name=".activities.driver.RegisterDriverActivity" />
         <activity
             android:name=".activities.LoginActivity"
             android:parentActivityName=".activities.SelectOptionAuthActivity" />

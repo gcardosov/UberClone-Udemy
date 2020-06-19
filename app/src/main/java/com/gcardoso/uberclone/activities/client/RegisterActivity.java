@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -11,6 +12,8 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.gcardoso.uberclone.R;
+import com.gcardoso.uberclone.activities.driver.MapDriverActivity;
+import com.gcardoso.uberclone.activities.driver.RegisterDriverActivity;
 import com.gcardoso.uberclone.includes.MyToolbar;
 import com.gcardoso.uberclone.models.Client;
 import com.gcardoso.uberclone.providers.AuthProvider;
@@ -102,7 +105,13 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    Toast.makeText(RegisterActivity.this, "El registro se realizo exitosamente", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(RegisterActivity.this, "El registro se realizo exitosamente", Toast.LENGTH_SHORT).show();
+                    //Nos traemos la implementacion de los flags que creamos en el map activity del driver para no regresar
+                    //al activity anterior
+                    Intent intent = new Intent(RegisterActivity.this, MapClientActivity.class);
+                    //Con las propiedades de flags no vamos a poder regresar al activity anterior
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
                 }
                 else{
                     Toast.makeText(RegisterActivity.this, "No se pudo registrar el usuario", Toast.LENGTH_SHORT).show();
