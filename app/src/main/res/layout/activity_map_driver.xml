@@ -7,11 +7,11 @@
     android:fitsSystemWindows="true"
     tools:context=".activities.driver.MapDriverActivity">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Este es el mapa del conductor"
-        >
-    </TextView>
+<fragment
+    android:id="@+id/map"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:name="com.google.android.gms.maps.SupportMapFragment"
+/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
