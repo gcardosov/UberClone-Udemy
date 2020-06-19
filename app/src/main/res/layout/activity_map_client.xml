@@ -12,4 +12,12 @@
         android:text="Este es el mapa del cliente "
         >
     </TextView>
+
+    <Button
+        android:id="@+id/btnLogout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Cerrar sesion"
+        >
+    </Button>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

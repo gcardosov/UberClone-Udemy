@@ -9,6 +9,9 @@ import android.view.View;
 import android.widget.Button;
 
 import com.gcardoso.uberclone.R;
+import com.gcardoso.uberclone.activities.client.MapClientActivity;
+import com.gcardoso.uberclone.activities.driver.MapDriverActivity;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -50,7 +53,30 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
- //Ir de una actividad a otra
+    //Esta seccion sobre escribiendo el metodo onStart en esta actividad dejamos abierta la sesion de los usuarios
+    //ya que en firebase se abre la sesión
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (FirebaseAuth.getInstance().getCurrentUser() != null){
+            String user = mPref.getString("user", "");
+            if (user.equals("client")){
+                Intent intent = new Intent(MainActivity.this, MapClientActivity.class);
+                //Con las propiedades de flags no vamos a poder regresar al activity anterior
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+
+            }else{
+                Intent intent = new Intent(MainActivity.this, MapDriverActivity.class);
+                //Con las propiedades de flags no vamos a poder regresar al activity anterior
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+
+            }
+        }
+    }
+
+    //Ir de una actividad a otra
     private void goToSelectAuth() {
         Intent intent = new Intent(MainActivity.this, SelectOptionAuthActivity.class);
         startActivity(intent);
