@@ -6,18 +6,15 @@
     android:layout_height="match_parent"
     tools:context=".activities.client.MapClientActivity">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Este es el mapa del cliente "
+    <include layout="@layout/action_bar_toollbar"
         >
-    </TextView>
+    </include>
 
-    <Button
-        android:id="@+id/btnLogout"
+    <fragment
+        android:id="@+id/map"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Cerrar sesion"
-        >
-    </Button>
+        android:layout_height="match_parent"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
