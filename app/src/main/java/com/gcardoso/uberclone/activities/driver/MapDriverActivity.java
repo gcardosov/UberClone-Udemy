@@ -1,19 +1,23 @@
 package com.gcardoso.uberclone.activities.driver;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
+import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -46,7 +50,7 @@ public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCa
     private FusedLocationProviderClient mFusedLocation;
 
     private final static int LOCATION_REQUEST_CODE = 1;
-
+    private final static int SETTINGS_REQUEST_CODE = 2;
 
 
     //Call back para mandar la ubicacion cuando el usuario se mueva
@@ -113,24 +117,86 @@ public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCa
         if (requestCode == LOCATION_REQUEST_CODE){
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
                 if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                    mFusedLocation.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+                    if (gpsActived()){
+                        mFusedLocation.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+                    }else{
+                        showAlertDialogNOGPS();
+                    }
                 }
+                else {
+                    checkLocationPermissions();
+                }
+            }
+            else{
+                checkLocationPermissions();
             }
         }
     }
 
-    //Metodo para aescuchar el request de nuestra aplicacion
-    private void startLocation(){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ) {
-             mFusedLocation.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
-            }else{
-             checkLocationPermissions();
-         }
-        }else{
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == SETTINGS_REQUEST_CODE && gpsActived()){
             mFusedLocation.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+        }else{
+            showAlertDialogNOGPS();
+
         }
     }
+
+    private void showAlertDialogNOGPS(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Por favor activa tu ubicación para continuar")
+                .setPositiveButton("Configuraciones", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //Espera a que el usuario genere una accion
+                        //en este caso activar el gps
+                        startActivityForResult(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS), SETTINGS_REQUEST_CODE);
+                    }
+                }).create().show();
+
+    }
+
+
+
+
+    //Metodo que permite saber si el usuario tiene activo el gps
+    private boolean gpsActived(){
+        boolean isActive = false;
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+            isActive = true;
+        }
+        return isActive;
+
+    }
+
+    //Metodo para aescuchar el request de nuestra aplicacion
+    private void startLocation() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                //si el gps esta activo que empiece a escuchar
+                if (gpsActived()) {
+                    mFusedLocation.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+                } else {
+                    showAlertDialogNOGPS();
+                }
+            }
+            else {
+                checkLocationPermissions();
+            }
+        } else {
+            if (gpsActived()){
+                mFusedLocation.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+            }
+            else{
+                showAlertDialogNOGPS();
+            }
+        }
+
+    }
+
 
 
     //Metodo para validar que pasaria si el usuario no acepta los permisos
