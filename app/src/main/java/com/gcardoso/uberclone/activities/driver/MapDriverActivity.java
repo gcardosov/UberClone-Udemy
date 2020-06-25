@@ -20,6 +20,8 @@ import android.os.Looper;
 import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 import com.gcardoso.uberclone.R;
 import com.gcardoso.uberclone.activities.MainActivity;
@@ -35,8 +37,11 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 //Para implementar la interface OnMapReadyCallback nos marca errores por lo cual necesitamos
 //sobreesribir algunos metodos
 
@@ -51,6 +56,11 @@ public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCa
 
     private final static int LOCATION_REQUEST_CODE = 1;
     private final static int SETTINGS_REQUEST_CODE = 2;
+    //Propiedad para establecer un icono dentro del mapa
+    private Marker mMarker;
+
+    private Button mButtonConnect;
+    private boolean mIsConnect = false;
 
 
     //Call back para mandar la ubicacion cuando el usuario se mueva
@@ -59,11 +69,26 @@ public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCa
         public void onLocationResult(LocationResult locationResult){
             for(Location location: locationResult.getLocations()){
                 if (getApplicationContext() != null){
+                    //aqui hicimos la validadcion para que no se elimine el marcador repetido
+                    if (mMarker != null){
+                        mMarker.remove();
+                    }
+
+                    //Propiedad para ver el icono en la posicion de la ubicacion del conductor
+                    mMarker = mMap.addMarker(new MarkerOptions().position(
+                          new LatLng(location.getLatitude(), location.getLongitude())
+                            )
+                            .title("Tu posición")
+                            //Pasamos el icono
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_car))
+                    );
+
                   // Obtener la localizacion del usuario en tiempo real
                     mMap.moveCamera(CameraUpdateFactory.newCameraPosition(
                             new CameraPosition.Builder()
                             .target(new LatLng(location.getLatitude(), location.getLongitude()))
-                            .zoom(15f)
+                                    //zoom para acercar a la ubicacion
+                            .zoom(16f)
                             .build()
                     ));
 
@@ -79,6 +104,7 @@ public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCa
         setContentView(R.layout.activity_map_driver);
         //Vamos a mostrar el toobar
         MyToolbar.show(this, "Conductor", false);
+        mAuthProvider = new AuthProvider();
         mFusedLocation = LocationServices.getFusedLocationProviderClient(this);
         //Instanciamos la variables
         //Nos marco error al acceder al metodo getSupportFragmentManager asi que tuvimos que castear
@@ -86,7 +112,19 @@ public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCa
         mMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         //el metodo recibe una actividad como parametro
         mMapFragment.getMapAsync(this);
-        mAuthProvider = new AuthProvider();
+
+         mButtonConnect = findViewById(R.id.btnConnect);
+         mButtonConnect.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View v) {
+                 if (mIsConnect){
+                     disconnect();
+                 }
+                 else{
+                     startLocation();
+                 }
+             }
+         });
     }
 
     @Override
@@ -94,7 +132,7 @@ public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCa
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         mMap.getUiSettings().setZoomControlsEnabled(true);
-
+        //Propiedad que sirve para ver con un punto en el mapa nuestra ubicacion
         //Instanceamos estas propiedades para obtener la ubicacion en tiempo real
         mLocationRequest = new LocationRequest();
         //Es la propiedad que define el rango de tiempo en el que se va ha estar actualizando la
@@ -119,6 +157,7 @@ public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCa
                 if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                     if (gpsActived()){
                         mFusedLocation.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+                        mMap.setMyLocationEnabled(true);
                     }else{
                         showAlertDialogNOGPS();
                     }
@@ -138,6 +177,7 @@ public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCa
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == SETTINGS_REQUEST_CODE && gpsActived()){
             mFusedLocation.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+            mMap.setMyLocationEnabled(true);
         }else{
             showAlertDialogNOGPS();
 
@@ -172,13 +212,24 @@ public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCa
 
     }
 
+    private void disconnect(){
+        mButtonConnect.setText("Conectarse");
+        mIsConnect = false;
+        if (mFusedLocation != null){
+            mFusedLocation.removeLocationUpdates(mLocationCallback);
+        }
+    }
+
     //Metodo para aescuchar el request de nuestra aplicacion
     private void startLocation() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 //si el gps esta activo que empiece a escuchar
                 if (gpsActived()) {
+                    mButtonConnect.setText("Desconectarse");
+                    mIsConnect = true;
                     mFusedLocation.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+                    mMap.setMyLocationEnabled(true);
                 } else {
                     showAlertDialogNOGPS();
                 }
@@ -189,6 +240,7 @@ public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCa
         } else {
             if (gpsActived()){
                 mFusedLocation.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+                mMap.setMyLocationEnabled(true);
             }
             else{
                 showAlertDialogNOGPS();

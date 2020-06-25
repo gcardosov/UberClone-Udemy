@@ -94,6 +94,7 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         mMap.getUiSettings().setZoomControlsEnabled(true);
+        //mMap.setMyLocationEnabled(true);
 
         //Instanceamos estas propiedades para obtener la ubicacion en tiempo real
         mLocationRequest = new LocationRequest();
