@@ -23,10 +23,18 @@ public class AuthProvider {
     }
 
     //Con este metodo cerramos la sesión del usuario
-    public void logout(){
-        mAuth.signOut();
+    public void logout(){ mAuth.signOut();}
 
+    public String getId(){
+        return mAuth.getCurrentUser().getUid();
     }
 
-
+    public boolean existSession(){
+        boolean exist = false;
+        //validacion de usuario
+        if (mAuth.getCurrentUser() != null){
+            exist = true;
+        }
+        return exist;
+    }
 }

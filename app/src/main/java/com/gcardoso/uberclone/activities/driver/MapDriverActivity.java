@@ -22,12 +22,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.gcardoso.uberclone.R;
 import com.gcardoso.uberclone.activities.MainActivity;
 import com.gcardoso.uberclone.activities.client.MapClientActivity;
 import com.gcardoso.uberclone.includes.MyToolbar;
 import com.gcardoso.uberclone.providers.AuthProvider;
+import com.gcardoso.uberclone.providers.GeofireProvider;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -42,6 +44,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
 //Para implementar la interface OnMapReadyCallback nos marca errores por lo cual necesitamos
 //sobreesribir algunos metodos
 
@@ -51,6 +54,8 @@ public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCa
     private GoogleMap mMap;
     private SupportMapFragment mMapFragment;
     private AuthProvider mAuthProvider;
+    private GeofireProvider mGeofireProvider;
+
     private LocationRequest mLocationRequest;
     private FusedLocationProviderClient mFusedLocation;
 
@@ -61,7 +66,7 @@ public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCa
 
     private Button mButtonConnect;
     private boolean mIsConnect = false;
-
+    private LatLng mCurrentLatLng;
 
     //Call back para mandar la ubicacion cuando el usuario se mueva
     LocationCallback mLocationCallback = new LocationCallback(){
@@ -69,6 +74,9 @@ public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCa
         public void onLocationResult(LocationResult locationResult){
             for(Location location: locationResult.getLocations()){
                 if (getApplicationContext() != null){
+
+                    mCurrentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+
                     //aqui hicimos la validadcion para que no se elimine el marcador repetido
                     if (mMarker != null){
                         mMarker.remove();
@@ -76,26 +84,27 @@ public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCa
 
                     //Propiedad para ver el icono en la posicion de la ubicacion del conductor
                     mMarker = mMap.addMarker(new MarkerOptions().position(
-                          new LatLng(location.getLatitude(), location.getLongitude())
+                            new LatLng(location.getLatitude(), location.getLongitude())
                             )
-                            .title("Tu posición")
-                            //Pasamos el icono
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_car))
+                                    .title("Tu posición")
+                                    //Pasamos el icono
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_car))
                     );
 
-                  // Obtener la localizacion del usuario en tiempo real
+                    // Obtener la localizacion del usuario en tiempo real
                     mMap.moveCamera(CameraUpdateFactory.newCameraPosition(
                             new CameraPosition.Builder()
-                            .target(new LatLng(location.getLatitude(), location.getLongitude()))
+                                    .target(new LatLng(location.getLatitude(), location.getLongitude()))
                                     //zoom para acercar a la ubicacion
-                            .zoom(16f)
-                            .build()
+                                    .zoom(16f)
+                                    .build()
                     ));
-
+                    updateLocation();
                 }
             }
         }
     };
+
 
 
     @Override
@@ -105,6 +114,8 @@ public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCa
         //Vamos a mostrar el toobar
         MyToolbar.show(this, "Conductor", false);
         mAuthProvider = new AuthProvider();
+        mGeofireProvider = new GeofireProvider();
+
         mFusedLocation = LocationServices.getFusedLocationProviderClient(this);
         //Instanciamos la variables
         //Nos marco error al acceder al metodo getSupportFragmentManager asi que tuvimos que castear
@@ -126,6 +137,16 @@ public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCa
              }
          });
     }
+
+
+    //Guardamos la locacion cada vez que se mueve
+    public void updateLocation(){
+        //Validacion para almecenar en la base de datos
+        if (mAuthProvider.existSession() && mCurrentLatLng !=null){
+            mGeofireProvider.saveLocation(mAuthProvider.getId(), mCurrentLatLng);
+        }
+    }
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -212,11 +233,18 @@ public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCa
 
     }
 
-    private void disconnect(){
-        mButtonConnect.setText("Conectarse");
-        mIsConnect = false;
-        if (mFusedLocation != null){
+    private void disconnect() {
+
+        if (mFusedLocation != null) {
+            mButtonConnect.setText("Conectarse");
+            mIsConnect = false;
             mFusedLocation.removeLocationUpdates(mLocationCallback);
+            if (mAuthProvider.existSession()) {
+                mGeofireProvider.removeLocation(mAuthProvider.getId());
+            }
+        }
+        else {
+            Toast.makeText(this, "No te puedes desconectar", Toast.LENGTH_SHORT).show();
         }
     }
 
